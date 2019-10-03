@@ -1,0 +1,700 @@
+function  :  
+    CPU register must be reset
+    stack pointers created
+    memory consumed (pointer, in/out values)
+
+inline functions :
+    avoid the overhead associated with traditional function calls.
+    ex: 
+        inline void swap (int & a, int & b)
+        {
+            int temp = a;
+            a = b;
+            b = temp;
+        }      
+    inline functions don't do function calls but insert the body of the function in that location
+    good but only in small functions 
+
+Lifetime : how long the variable stays in the memory from his declaration to his destruction
+
+Linkage: visibility of a variable outside the file that contains it 
+
+
+Memory : 
+
+- physical 
+- logical : 
+    stack:
+        intrinsic data(predifined) and memory address(pointers)
+        remove an item : popped off, used and discarded
+
+    heap(free store):
+        pool of memory used to store objects that dynamically allocated at run time by app.
+
+Scope: 
+    where an identifier is visible in a program
+
+    identifier:
+        variable, constant, class, etc...
+    
+    ex: 
+        #include <iostream>
+        int main()
+        {
+            int total = 0;
+            for (int i = 1; i <= 10 ; i++)
+            {
+                total += i;
+            }
+            std::cout  << "The sum of the numbers 1 to 10 is " << total << std::endl;
+            std::cout << "Current value of i is " << i << std::cout; // error : i not defined in this scope
+        return 0;
+        }
+
+    static : lifetime : whole program execution 
+        static in a function : variable retain its value between calls to the function
+    
+    extern : declare object that is defined in another translation unit : external Linkage
+
+    thread_local : declare that the identifer is only accessible on the thread which is created. (C++11)
+
+
+const : 
+
+    const: 
+        - tells the person calling the function that the function will not change the parameter's value
+        - ensures that the function doesn't change the paramerter's value
+
+        ex: void printInteger(const int myValue)
+        {
+            std::cout << myValue;
+        }
+    
+    constexpr:
+        - compile-time constant
+        - any variable that should not change values after initialization and whose initializer is known at compile-time 
+        symbolic constant: 
+            - avoid using #define to create symbolic constant
+
+    way to put all constant : in a namespace in the header file
+
+    #ifndef CONSTANTS_H
+    #define CONSTANTS_H
+
+    namespace constants
+    {
+        constexpr double pi(qqmkdjfqd)
+        constexpr double avogado(qldjfmlqsdf)
+        constexpr doubel (mqjdfmq)
+    }            
+    #endif
+    
+    // better way 
+
+    // in constants.h 
+    namespace constants
+    {
+        // forward declarations only
+        extern const double pi;
+        extern const double avogadro;
+        extern const double my_gravity;
+    }
+
+    // in constants.cpp
+    namespace constants
+    {
+        // actual global variables
+        extern const double pi(lqsdm);
+        extern const double avogadro(qsdfm);
+        extern const double my_gravity(qfm);
+    }
+
+Blocks : 
+    - shadowing(name hiding)
+        - when the nested variable "hides" the outer variable
+        - avoid using nested variables with the same names as variables in outer Block
+        - variables should be defined in the most limited scope possible
+
+    - global variables: 
+        - static duration: created when the progam starts  and destroyed when it ends
+        - file scope 
+        - global scope operator " :: "
+        - use prefix 'g_'
+
+        int value{5};
+        int main()
+        {
+            int value = 7;
+            value ++;
+            ::value--;
+        }
+         - why not using them : non_const global variables can be changed in any functions
+         - use local variables instead of global variables whenever reasonable
+
+    - Linkage:
+        - internal linkage(static): can be used anywhere within their file
+            - (static) ex: static int g_x;
+        - external linkage : can be used in all files
+            - (extern) ex: extern double g_y(9.8);
+    
+    - using statements:
+        - avoid "using" statements outside of a function 
+        - avoid "using" directives 
+
+coercion (implicit type conversion)
+    - when compiler automatically transforms one fundamental data type into another
+        - numeric promotion: whenever a value frome one type is converted into a value of a larger similar data type
+        - numeric conversion: whenever a value from a larger type is converted to a similar smaller type, or between different types
+        cases: 
+            - floating point values: rouding due to a loss of precision: 
+            ex: float f= 0.123456789; // double value f  has 9 significant digits but floats can only support about 7
+                std::cout << std::setprecision(9) << f;
+        - arithmetic conversion : 
+            - can be seen via typeid()
+
+casting (explicit type conversion)
+    - where the developer uses a casting operator to direct the conversion
+    - 5 types cast: c-style, static,const,dynamic, reinterpret
+    - avoid const and reinterpret casts.
+    
+    - c style cast:
+        - ex : int  i1 = 10;
+               int  i2 = 4;
+               float f = float(i1)/ i2;
+        - avoid c-style cast
+    - static_cast: 
+        - ex: char c ='a';
+              std::cout << static_cast<int>(c) << std::endl; // prints 97
+        - provides compile-time type checking.
+
+string:
+    - std::getline()
+        - reads full line 
+
+user-defined data types:
+    - enumerate : data type : every possible value is defined as a symbolic constant 
+    - definition of the enum: no memory allocated,
+    - definition of variable: memory allocated
+    ex: enum Color
+        {
+            RED,
+            BLUE,
+            GREEN
+        };
+    - use prefix : ANIMAL_,
+    - don't assign specific value to your enumerator
+    - don't assign same value to 2 enumerators.
+    - enumerated values evaluate to integers
+
+enum class:
+    - better
+
+typedef: allow the programmer to create an alias for a data type,
+
+    - used for legibility : knowing the purpose of a value rather than his type
+    ex: typedef int testScore_t;
+    testScore_t GradeTest();
+    - simplify complex types 
+    ex: typedef std::vector<std::pair<std::string, int> > pairlist_t;
+        pairlist_t pairlist;
+        bool hasDuplicates(pairlist_t pairlist)
+        {
+
+        }
+    
+type aliases
+    ex: using distance_t = double
+
+struct : aggregate data type (groups multiple individual variables together) 
+    - a function can also return a struct 
+    -nested struct 
+
+auto : type inference (type deduction )
+
+control flow introduction: 
+    - halts 
+        ex: exit();
+    - jumps
+    - conditional branches
+    - loops 
+    - exceptions 
+
+    - go to : 
+        - control flow statement, causes the CPU to jump to another spot in the code.
+
+random number generation
+
+    - pseudo-random number generator(PRNG)
+        - use starting number (seed)
+        
+arrays: 
+    
+    - subscript operator([]), subscript = index
+
+    - putting a array as parameter of a function will change the passed array
+
+    - do not use sizeof( array ) in functions.
+    
+    - ensure that indices are valid for the range of your array.
+
+        - fixed array : length known at compile time : use constants. 
+            ex: int testScore[30];
+        - cannot change length
+    
+        - multidimensional Array : array of array
+        - dynamic array
+
+
+pointers: 
+     
+    - reference : & -> show the memory address of the assigned variable.
+    - dereference operator: * -> access the value at a particuar address
+    - pointers are variables that holds a memory address as its value
+    - when declaring pointer variable, put asterix next to variable name
+    - for pointer returning functions, put astereix next to the return type 
+    - the type of the pointer has to match the type of variable being pointed to.
+    - scaling: 
+        - compiler multiplies the integer operand by the size of the object being pointed to.
+
+memory allocation: 
+    - static memory allocation: 
+        - case for static and global variables: memory allocated once when program runs and persists throughout the life of your program
+    - automatic memory allocation:
+        - case for function parameters and local variables: memory allocated when block is entered, and freed when block is exited
+    both use a portion of memory called "stack" only 1MB;
+    - dynamic memory allocation: 
+        - way to request memory from the OS
+        - memory doesn't come from stack, but from the heap (+GB),
+        - use of the "new" operator 
+        - set deleted pointers to nullptr unless they are going out of scope immediately afterward.
+        -null pointers -> no memory has been allocated, conditionally allocated memory;
+        - memory leak: when program loses the address of dynamically allocated memory before giving it back to the OS:
+            - program can't delete memory, OS can't use memory.
+
+pointer to const value : 
+    - (non-const) pointer that points to a constant value
+    - treat the pointed variable as a constant 
+    - pointer isn't const itself : can be redirected to point at other values
+
+const pointer:
+    - pointer whose value can not be changed after initialization
+    - must be initialized to a value upon declaration.
+    - if value is non-const : can be change via dereferencing 
+
+const pointer to const value:
+    - pointer can't be set to point to anotheraddress, nor can the value be changed through the pointer.
+
+
+reference: type of variable that acts as an alias to another object or value.
+    - reference to non-const values
+    - reference to const values
+    - r-value reference
+
+    - i-value : objects that have defined memory address that persists beyond a single expression
+    - r-value : temporary values that do not have a defined memory address, only expression scope
+    - R-value : include both the results of expressions and literals.
+
+
+    - reference must be initialized when created.
+    - pass arguments by non-const reference when the argument needs to be modified by the function.
+    - avoid deprecation of C-style arrays in functions 
+        - to work, array size has to be defined in parameter.
+
+
+reference vs pointers:
+
+    - a reference acts like a pointer that is implicitly dereferenced when accessed 
+    - as reference must be initialized to valid objects( cannot be null) and can't be changed once set -> much safer thus more limited
+    - priorities references over pointers
+
+reference and const:
+
+    - can be initialized with non-const l-values, const l-values and r-values
+    - as function parameter : allows access to the argument without making a copy of it while guaranteeing that the function will not change the value being referenced
+    - pass non-pointer, non-fundamental data type variables (such as structs) by (const) reference
+
+for-each loop (range-based for loop):
+
+    - simplier and safer method for cases where we want to iterate through every element in an array
+    - if elements are non-fundamental types, use references or const references for performance reasons
+    - pointers ( array[]) and dynamic arrays won't work
+
+void pointer :
+
+    - generic pointer: can be pointed at objects of any data type 
+    - doesn't which data it's pointing at
+    - avoid 
+
+std::array: 
+
+    - arrays that won't decay when passed into functions 
+    - cannot omit the array length by initialization
+    - does not do any bounds-checking
+    - second form of array element access (at()) : does bounds checking
+    - pass std::array by reference or const reference
+    - for-each works 
+
+std::vector:
+
+    - dynamic arrays that handles its own memory management
+    - can create arrays that have their length set at runtime without explicit allocate and deallocate (new,delete)
+    - no need to include array length at compile time 
+    - at() for bound checking
+    - vector resizes at assignement
+    - self-cleanup prevents memory leaks
+    - can compact bool into bytes
+
+
+pass by value: 
+
+    - argument's value copied into value of parameter
+    - argument can't be modified by function
+    - works with everything
+    - copying struct and classes lead to performance issues
+    - when: passing fundamental data type and enumerators.
+
+pass by reference:
+
+    - changes made to parameter are passed through to the argument.
+    - can "return" multiple values.
+    - synthax can lead to errors (output parameters put in function call);
+    - non-const references  can only reference non-const l-values (no const l-values nor r-values)
+    - pass by const-reference : 
+        - doesn't change the argument
+        - can pass both any type  : l-values const l-values r-values
+    - always use const reference unless you need to change the value of the argument
+    - reference to pointer : change address of the pointer 
+    - reference to c-style array:
+        - works but the size needs to be explicitly defined.
+        - for it to work with arrays of any length -> templates
+    - references must be initialized
+
+pass by address:
+
+    - when: passing built-in arrays(knowing that they will decay into pointer)
+            passing a pionter and nullptr is a valid argument logically
+    - when not: passing structs or classes( pass by reference)
+                passing fundamental types ( pass by value)
+    pass by reference will be better
+
+
+return by value: 
+
+    - simplest and safest return type
+    - copy of the value is returned
+    - can return literals(5),expressions(x+1),variables(x) -> flexible
+    - no scoping issues 
+    - not use it when:
+        - returning built-in array or pointer (return by address)
+        - returning large struct or class (return by reference)
+
+return by address:
+
+    - can only return address of a variable
+    - only copies an address -> fast 
+    - cannot return addresses of local variables ( variable destroyed at end of function)
+    - used to return dynamically allocated memory to the caller ( dynamically allocated memory does not go out of scope)
+    - not use it when:
+        - returning large struct or class that was passed by reference
+
+return by reference:
+
+    - can only return variables
+    - only copies reference -> fast
+    - can't return local variables( use return by value)
+    - used to return arguments passed by reference back to the caller
+    - when to use it : 
+        - returning reference parameter
+        - returning element from an array that was passed into the function
+        - returning a large struct or class that will not be destroyed at the end of the function 
+    - when not : 
+        - returning built-in array or pointer value( use return by address)
+
+lifetime extension: 
+
+    - returning a value without address (r-value) doesn't work with return by reference (non-const)
+    - const reference can bind r-values 
+    - normally r-values expire at end of expression
+    - lifetime of the r-value has been extended
+
+inline functions:
+
+    - code inside the function can be reused
+    - easier to update the code in a function
+    - easier to reads
+    - type checking
+    - easier to debug
+    - but slow
+
+function pointers:
+
+    - point to functions
+    - callback functions 
+    
+stack and heap: 
+
+    - memory divided into segments:
+        - code segment:     compiled program -> read-only
+        - bss segment:      zero-initialized global and static variables
+        - data segment:     initialized global and static variables
+        - heap:             where dynamically allocated variables are allocated from
+        - call stack:       where function parameters, local variables, and other function-related information are stored.
+
+    heap segment(free store):
+        - keeps track of memory used for dynamic memory allocation
+        - using "new" operator allocate memory in the heap
+        - memory may not be allocated sequencially
+        - deleting dynamically allocated variables return the memory to the heap  
+        - deleting pointer does not delete the variable, just returns the memory back to the OS 
+        - allocating on the heap is slow
+        - allocated memory stays allocated until it is specifically deallocated or the application ends
+        - dynamically allocated memory must be accessed through a pointer
+        - dereferencing a pointer is slower than accessing a variable directly
+        - heap(big pool of memory), large arrays,structures, or classes can be allocated here.
+    
+    call stack(the stack):
+        - keeps track of all the active functions(called but not terminated)
+        - handles allocation of all function parameter and local variable 
+        - implemented as a stack data structure.
+    
+        - stack data structure:
+            - programming mechanism
+            - organize data 
+            - ex: arrays, structs -> storing and accessing data 
+            - last-in first-out (LIFO) structure
+        - allocating memory is fast 
+        - memory stays in scope as long as it is on the stack
+        - all memory is known at compile time
+        - memory can be accessed directly through variables
+    
+    recursive function: 
+        - function that calls itself
+        - works like function calls 
+        - recursive termination: condition that stop the recursion
+        - solve a problem by first finding the solution to a subset of the problem
+        - trivial output: base case 
+        - good choice when:
+            - recursive code is much simpler to implemented
+            - the recursion depth can be limited 
+            - the iterative version of the algorithm requires managing a stack of data 
+            - this isn't a performance-critical section of code 
+
+    errors:
+        - synthax error: statement not valid according to the grammar of C++
+            - always caught by the compiler 
+            - easy to fix 
+        - semantic error: statement syntactically valid, but does not do what the programmer intended
+            - not caught by the compiler 
+            - hard to fix
+        - logic error: logic of statement is incorrect
+        - violated assumption: when programmer assumes that something will be either true or false but isn'tells
+    
+    defensive programing: 
+        - program design involving trying to identify areas where assumptions may be violated.-> detects and handles any violation of those assumptions
+    
+    assert : 
+        - using statement to detect a violated assumption and printing an error message
+        - preprocessor macro that evaluates a conditional expression at runtime
+        - performance cost , but can be turned off 
+        - terminates the program -> used only in case of  corruption
+    
+    static_assert:
+        - operates at compile time -> compiler error
+        - the conditional part of a static_assert must be able to be evaluated at compile time 
+    
+    command line arguments: 
+        - optional string argument that are passed by the OS to the program when launched.
+        - provide a way for people or programs to provide inputs to a program.
+        - argc : integer parameter: argument count -> at least 1 (first argument is name of program)
+        - argv : argument value: where the argument value are stored
+        - argv is an C-style array of the length argc
+        - std::stringstream works like std::cin 
+
+    ellipsis: 
+        - "..." : enable passing a variable number of parameters to a function
+        - needs at least one none ellipsis parameter
+        - has to be the last parametere
+
+
+Object-oriented programming
+
+    - object : 
+        - piece of memory that can be used to store values
+        - traditional programming : data and functions that work on that data are separate entities that are combined
+        - component to object :
+            - list of relevant properties
+            - number of behaviour that they can exhibit
+    - oop provides us with the ability to create objects that tie together both properties and behaviours into a self-contained, reusable package
+        - reads more clearly
+        - focused on defining objects that have well-defined set of behaviors rather than writing functions -> object-oriented
+    - advantages:
+        - allows a more modular writing
+        - high degree of code-reusability
+        - more intuitive (allows us to define interactions between us the objects)
+    - classes: 
+        - types that hold data and provide functions that work with the data
+        - declaration doesn't declare any memory 
+        - methods (member functions) : functions defined inside of a class 
+        - implicit object:  associated object to the method
+        - "m_" prefix for member variable : 
+            - helps to distinguish member variables from non-member, we know that we are changing the state of the object
+        - use struct for data-only structures, class for objects that have both data and functions
+    - public members: members that can be accessed from outside of the class 
+    - private members: members that can only be accessed by other members of the class. 
+    - access specifier : determines who has access to the members that follow the specifier 
+        - 3 access specifiers : public, private,protected
+        - public and private make the member public or private 
+        - protected works muck like private (inheritance)
+    - make member variables private and member functions public
+    - public interface: group of public members of class 
+        - defines how programs using the class will interact with the class
+    - the separation between interface and implementation allows to use objects without understanding how they work
+    - thus it reduces the complexity of using these objects and increase the number of objects we're capable of interacting with 
+    - encapsulation(information hiding): process of keeping the details about how an object is implemented hidden away from users of the object 
+        - user access the object through a public interface. 
+        - implemented via access specifiers 
+        - all member variables : private -> hiding the implementation details
+        - most of member functions: public -> exposing an interface for the user
+        - encapsulated classes are easier to use and reduce the complexity of your programs
+        - encapsulated classes help protect your data and prevent misuse
+        - easier to debug 
+        - access functions: short public function whose job is to retrieve or change the value of a private member variable
+            - getters: functions that return the value of a private member variable
+            - setters: functions that set the value of a private member variable
+            - only provide access functions when it makes sense for the user to be able to get or set a value directly
+            - getters should usually return by value or const reference, not non-reference
+    - class initialization: for public members -> direct using initialization list of uniform initialization
+    - private members: can't access directly a variable -> can't directly init it .  
+    - constructors: special kind of class memeber function that is automatically called when an object is instantiated.
+        - used to initialize member variable.
+        - must have same name as the class 
+        - have no return type 
+        - default constructors: constructors that take no parameters -> call if no initialization values are provided by the user
+        - use direct or uniform initialization with your classes
+        - do not copy initialize your class 
+        - when defining a function with default parameters, all default parameters must follow any non-default parameters 
+        - provide at least one constructor for your class, even if it's an empty default constructor
+        - class can contain other classes as member variables 
+        - best practice : Always initialize all member variables in your objects 
+
+        - member initializer lists: initialize variables without assignements
+        - use member initializer lists to initialize your class member variables instead of assignement
+        - favor uniform initialization over direct initialization
+    - destructors: special kind of class member function that is automatically called when an object is destroyed
+        - must have same name as the class preceded by ~(tilde)
+        - cannot take arguments
+        - has no return type 
+        - should not be called explicitly 
+        
+    - RAII(Ressource Acquisition Is initialization): programming technique whereby resource use is tied to the lifetime of objects with automatic duration
+        - resource acquired after the object is created
+        - resource released in the destructor 
+        - helps prevent ressource leaks 
+        - if your class dynamically allocates memory, use the RAII paradigm, and don't allocate objects of your class dynamically 
+        - when using exit() : terminates program without destructors being called -> be wary if you're relying on destructor to do necessary cleanup work
+    - this : hidden const pointer that holds the address of the object the member function was called on 
+        - does it automatically
+        - explicitly referencing "this" : to disambiguate the member variable from a parameter 
+        - do not use this-> to all uses of your class members. Only do so when you have a specific reason to
+    - const class objects 
+        - allows only const member functions: guarantees to not modify the object or call any non-const member functions
+        - make any member function that does not modify the state of the class object const, so that it can be called by const objects
+    - static member variables: (static variable keep their values and are not destroyed even after they go out of scope)
+        - static as global variable give them internal linkage : restrict to the file they are defined in.
+        - static member variable are shared by all objects of the class.
+        - static member variable don't need objects 
+        - declaring it inside the class = forward declaration
+        - must explicitly define the static member outside of the class (global scope)
+        - not subject to access controls: you can define and initialize the value even if it's private or protected 
+        - if it's a const or constexpr : can be initialized inside the class definition
+        - they have no *this pointer 
+        - monostates(pure static classes) class with all static members 
+
+    - Anonymous objects: value that has no name
+        - they have expression scope 
+        - Anonymous class objects : creating objects while omitting the variable name.
+        - Anonymous objects are treated as rvalues(no address)-> it can only be passed or returned by value or const reference 
+        - can only be used once 
+    
+    - Nested types : 
+        - have access to the member of the enclosing class 
+        - doesn't have access to the "this" pointer of the enclosing class.
+    
+    - Timing your code: for performance testing.
+
+- operator overloading: defining your own versions of the operator 
+    - limitations: (?:),(::),(.) and (.*) can't be overloaded 
+        - can only overload operators that exist 
+        - one of the operands must be user-defined type
+        - not possible to change number of operand the operator supports
+        - operators keep their default precedence and associativity
+    - when overloading operators, it's best to keep the function of the operators as close to the original intent of the operators as possible
+    - If the meaning of an operator when applied to a custom class is not clear and intuitive, use a named function instead 
+    - Prefer overloading operators as normal functions instead of friends if it's possible to do so without adding additional functions.
+    - member function: 
+        - (=),([]),(()),(->), unary operator, binary operator that modifies its left operand (+=)
+    - friend or normal function:
+        - binary operator that doesn't modify the left operand(+)
+    - subscript operator ([]) is overloaded to provide direct access to element from array contained within a class 
+        - make sure you're not trying to call an overloaded operator[] on a pointer to an object
+    - parenthesis operator : () must be implemented as member function
+        - it's sometimes overloaded with 2 parameters to index multidimensional arrays, or to retrieve subset 
+        - anything else is probably better written as a member function 
+        - overloaded to create functors, 
+    - functors (function object): classes that operate like functions
+        - can store data in member variables 
+    - overloading typecasts
+        -   allows to convert our class into another data 
+        -   to overload the function that casts our class to another data : write new function 
+        -   casting operators do not have return type.
+
+- copy constructor : special type of constructor used to create a new object as a copy of an existing object
+    - memberwise initialization: each member of the copy is initialized directly from the member of the class being copied.
+    - can prevent copies of our classes from being made by making the copy constructor private 
+    - copying an Anonymous class makes the compiler initializing directly instead of copying the constructor : elision 
+
+- copy initialization:
+    - avoid using copy initialization, and use uniform initialization instead
+
+- Overloading the assignement operator 
+    - copy constructor and assignement operator both copy one object to another
+    - while copy constructors initialize new objects, assignement operator replaces the contents of existing objects
+    - if a new object has to be created before the copying can occur -> copy constructor
+    - if a new object does not have to be created before the copying can occur -> assignement operator
+    - must be overloaded as a member function
+    - can be prevented by making the assignement private or by adding "= delete" at the end of the declaration
+
+- Shallow copying( or memberwise copying):
+    - each member are copied individually 
+    - problems by dynamically allocated memory
+    - shallow copies of pointer only copy the address of the pointer, no memory is allocated 
+- Deep copying: 
+    - allocates memory  for the copy and then copies the actual value
+    - requires that we write our own constructor and overloaded assignement operators 
+
+- differences between deep copied assignement operator and copy constructor
+    - self-assignement check added
+    - *this returned to be able to chain the assignement operator
+    - need to explicitly deallocate any value that the string is already holding (avoid memory leak)
+
+Object relationships: 
+
+    - ex: abstract concept : plants  -> instantation : unknown plant 
+        -> same for objects : good for code reusability 
+    different relations : 
+        - "is-a" -> a square is shape
+        - "has-a" -> a car has a steering wheel 
+        - "uses-a" -> a programmer uses a keyboard 
+        - "depends-on" -> a flower depends on a bee for pollination
+        - "member-of" -> student is member of a class 
+        - "part-of" -> your heart is a part of you 
+
+    - object composition: build complex objects from simplier ones 
+        -> complex objects : composite types
+    COMPOSITION: 
+        Composition rules: 
+            - member is part of the object
+            - member can only belong to one object at a time
+            - member has its existence mangaged by the object 
+            - member does not know about the existence of the object -> unidirectional relationship
+        - when object is destroyed, member is destroyed too: death relationships
